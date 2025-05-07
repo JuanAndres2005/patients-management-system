@@ -10,6 +10,8 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
+use App\Filament\Resources\PatientResource\RelationManagers;
+
 class TreatmentsRelationManager extends RelationManager
 {
     protected static string $relationship = 'treatments';
@@ -20,7 +22,15 @@ class TreatmentsRelationManager extends RelationManager
             ->schema([
                 Forms\Components\TextInput::make('description')
                     ->required()
-                    ->maxLength(255),
+                    ->maxLength(255)
+                    ->columnSpan('full'),
+                Forms\Components\Textarea::make('notes')
+                    ->maxLength(65535)
+                    ->columnSpan('full'),
+                Forms\Components\TextInput::make('price')
+                    ->numeric()
+                    ->prefix('$')
+                    ->maxValue(42949672.95),
             ]);
     }
 
@@ -30,6 +40,11 @@ class TreatmentsRelationManager extends RelationManager
             ->recordTitleAttribute('description')
             ->columns([
                 Tables\Columns\TextColumn::make('description'),
+                Tables\Columns\TextColumn::make('price')
+                    ->money('COP')
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('created_at')
+                    ->dateTime('m-d-Y h:i A'),
             ])
             ->filters([
                 //
